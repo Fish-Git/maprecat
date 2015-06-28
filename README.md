@@ -54,9 +54,9 @@
 ####                    Sample MAP Output
 
 
-    C:\Users\Fish\> maprecat map z1res1.sanitized
+    C:\Users\Fish\> maprecat map dasd1.sanitized
     Run option = map
-    Opening input file "z1res1.sanitized"...
+    Opening input file "dasd1.sanitized"...
     Track  45297 = Cyl 3019 (0BCB), Head 12 (0C) is flagged
     as being defective and has an alternate track assigned.
     Track  45625 = Cyl 3041 (0BE1), Head 10 (0A) is flagged
