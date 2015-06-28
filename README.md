@@ -4,29 +4,29 @@
 #                             maprecat
 
 
-    **NAME**
+    NAME
 
         maprecat   --   maps or reclaims defective tracks
 
-    **SYNOPSIS**
+    SYNOPSIS
 
-        maprecat.exe   {MAP|RECLAIM}   *infile*   [ *outfile* ]
+        maprecat.exe   {MAP|RECLAIM}   infile   [ outfile ]
 
-    **DESCRIPTION**
+    DESCRIPTION
 
         maprecat reports which tracks of the given dasd volume
         are marked defective with an alternate assigned or else
         reclaims such defective tracks.
 
-    **OPTIONS**
+    OPTIONS
 
-        *action*    desired action. MAP will report which tracks
+        action      desired action. MAP will report which tracks
                     are defective whereas RECLAIM will attempt to
                     reclaim them.
-        *infile*    name of emulated dasd image input file
-        *outfile*   name of emulated dasd image output file
+        infile      name of emulated dasd image input file
+        outfile     name of emulated dasd image output file
 
-    **NOTES**
+    NOTES
 
         Both input and output are presumed to be raw HDR-30 dasd
         image files as typically used in IBM ADCD distributions.
@@ -36,16 +36,16 @@
 
 
 
-    **EXIT STATUS**
+    EXIT STATUS
 
         Zero if processing was successful. Otherwise the standard
         'C' Runtime errno is returned indicating what went wrong.
 
-    **AUTHOR**
+    AUTHOR
 
         "Fish" (David B. Trout)
 
-    **VERSION**
+    VERSION
 
         1.8  (June 27, 2015)
 
