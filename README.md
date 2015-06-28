@@ -34,8 +34,6 @@
         The output file is only needed for the RECLAIM function;
         the input file is never modified.
 
-
-
     EXIT STATUS
 
         Zero if processing was successful. Otherwise the standard
