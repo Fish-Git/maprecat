@@ -1,0 +1,79 @@
+
+
+                              --------
+                                TODO
+                              --------
+
+                        (in no particular order)
+
+
+-------------------------------------------------------------------------------
+Change MAP output to look more similar to IBM's ICKDSF volume map report:
+
+
+    ICKDSF - xxx DEVICE SUPPORT FACILITIES yyy TIME: 00:23:00  mm/dd/yy  PAGE 1
+     INIT UNIT(0127) NVFY VOLID(tstvol) VTOC(1,1,1)
+
+
+
+    ICK31061I 0A93 VTOC INDEX CREATION SUCCESSFUL: VOLUME IS IN INDEX FORMAT
+    ICK061I   0A93 VTOC INDEX CREATION SUCCESSFUL: VOLUME IS IN INDEX FORMAT
+    ICK01307I DEFECTIVE-TRACK LIST IN HEXADECIMAL FOR VOLUME TSTVOL
+    ICK01308I THE FOLLOWING PRIMARY TRACKS WERE FOUND DEFECTIVE:
+      CCHH OF TRACK --- CCHH OF ALTERNATE --- FLAGGED DEFECTIVE
+        0003 0003          0375 0001                YES
+        0004 0004          0375 0002                YES
+        0004 0005          0375 0003                YES
+        0005 0005          0375 0004                YES
+        0006 0006          0375 0005                YES
+        0006 0007          0375 0006                YES
+        000C 000A          0375 0000                YES
+
+    ICK01312I NO DEFECTIVE ALTERNATE TRACKS WERE FOUND.
+    ICK01313I VOLUME CONTAINS 15    ALTERNATE TRACKS --  8    AVAILABLE.
+    ICK01314I VTOC IS LOCATED AT CCHH=X'0001 0001' AND IS     1 TRACKS.
+    ICK00001I FUNCTION COMPLETED, HIGHEST CONDITION CODE WAS 0
+              00:26:00    mm/dd/yy
+
+
+-------------------------------------------------------------------------------
+
+
+
+-------------------------------------------------------------------------------
+
+
+
+-------------------------------------------------------------------------------
+
+
+
+-------------------------------------------------------------------------------
+
+
+
+-------------------------------------------------------------------------------
+
+
+
+-------------------------------------------------------------------------------
+
+
+
+-------------------------------------------------------------------------------
+
+
+
+-------------------------------------------------------------------------------
+
+
+
+-------------------------------------------------------------------------------
+
+
+
+-------------------------------------------------------------------------------
+
+
+
+-------------------------------------------------------------------------------
