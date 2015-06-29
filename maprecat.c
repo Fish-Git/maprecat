@@ -13,7 +13,7 @@
 /*                          VERSION                                  */
 /*********************************************************************/
 
-#define VERSION     "1.8  (June 27, 2015)"
+#define VERSION     "1.8.1  (June 29, 2015)"
 
 
 
@@ -60,9 +60,22 @@
 #define  TRKS3390_3         (CYLS3390_3 * TRACKSPERCYL)
 #define  TRKS3390_9         (CYLS3390_9 * TRACKSPERCYL)
 
+
+
+
+
+/*-------------------------------------------------------------------*\
+    FIXME: make numtracks (or perhaps model number?) a command-line
+    argument instead of hard coding it like we currently are below.
+\*-------------------------------------------------------------------*/
+
 #define  NUMTRACKS          (TRKS3390_3)    // today
 //#define  NUMTRACKS          (TRKS3390_9)    // future?
 #define  NUMCYLS            (NUMTRACKS ? (NUMTRACKS / TRACKSPERCYL) : 0)
+
+
+
+
 
 U32 REMAINING = NUMTRACKS;  /* Total number of tracks to process */
 
@@ -108,8 +121,10 @@ static int error( int rc, char *msg )
 
 "    NOTES\n\n"
 
-"        Both input and output are presumed to be raw HDR-30 dasd\n"
-"        image files as typically used in IBM ADCD distributions.\n\n"
+"        Both input and output are presumed to be raw 3390 model 3\n"
+"        HDR-30 dasd image files as are typically used in IBM ADCD\n"
+"        distributions. Support for other dasd types and models may\n"
+"        be provided in a future release.\n\n"
 
 "        The output file is only needed for the RECLAIM function;\n"
 "        the input file is never modified.\n\n"

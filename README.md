@@ -28,8 +28,10 @@
 
     NOTES
 
-        Both input and output are presumed to be raw HDR-30 dasd
-        image files as typically used in IBM ADCD distributions.
+        Both input and output are presumed to be raw 3390 model 3
+        HDR-30 dasd image files as are typically used in IBM ADCD
+        distributions. Support for other dasd types and models may
+        be provided in a future release.
 
         The output file is only needed for the RECLAIM function;
         the input file is never modified.
@@ -45,7 +47,7 @@
 
     VERSION
 
-        1.8  (June 27, 2015)
+        1.8.1  (June 29, 2015)
 
 
 -----------------------------------------------------------------------
