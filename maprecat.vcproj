@@ -336,6 +336,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\LICENSE.txt"
+			>
+		</File>
+		<File
 			RelativePath=".\makefile"
 			>
 		</File>
