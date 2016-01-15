@@ -13,7 +13,7 @@
 /*                          VERSION                                  */
 /*********************************************************************/
 
-#define VERSION     "1.8.1  (June 29, 2015)"
+#define VERSION     "1.8.2  (January 13, 2016)"
 
 
 
@@ -48,38 +48,11 @@
 /*********************************************************************/
 
 #define  FILEHDRSIZE        (512)
+#define  TRACKSPERCYL       (15)
 #define  TRACKSIZE          (56832)     /* CKD_P370 format */
 
 #define  BAD_TRACK_SIG      0x56,0x45,0x52,0x30,0xF1,0xE2
 
-#define  CYLS3390_1         (1113)
-#define  CYLS3390_3         (CYLS3390_1 * 3)
-#define  CYLS3390_9         (CYLS3390_1 * 9)
-
-#define  TRACKSPERCYL       (15)
-#define  TRKS3390_3         (CYLS3390_3 * TRACKSPERCYL)
-#define  TRKS3390_9         (CYLS3390_9 * TRACKSPERCYL)
-
-
-
-
-
-/*-------------------------------------------------------------------*\
-    FIXME: make numtracks (or perhaps model number?) a command-line
-    argument instead of hard coding it like we currently are below.
-\*-------------------------------------------------------------------*/
-
-#define  NUMTRACKS          (TRKS3390_3)    // today
-//#define  NUMTRACKS          (TRKS3390_9)    // future?
-#define  NUMCYLS            (NUMTRACKS ? (NUMTRACKS / TRACKSPERCYL) : 0)
-
-
-
-
-
-U32 REMAINING = NUMTRACKS;  /* Total number of tracks to process */
-
-#define  TRACKNUM           (NUMTRACKS - REMAINING)
 #define  POS2TRACK( pos )   ((U32)(((pos) - FILEHDRSIZE) / TRACKSIZE))
 #define  CYLNUM( trk )      ((trk) ? ((trk) / TRACKSPERCYL) : 0)
 #define  HEADNUM( trk )     ((trk) - (CYLNUM( trk ) * TRACKSPERCYL))
@@ -121,7 +94,7 @@ static int error( int rc, char *msg )
 
 "    NOTES\n\n"
 
-"        Both input and output are presumed to be raw 3390 model 3\n"
+"        Both input and output are presumed to be raw 3390 (CKD)\n"
 "        HDR-30 dasd image files as are typically used in IBM ADCD\n"
 "        distributions. Support for other dasd types and models may\n"
 "        be provided in a future release.\n\n"
@@ -160,6 +133,8 @@ int main( int argc, char *argv[] )
     U64 orgpos;                         /* alternate track's file position of original track */
     U32 numbad = 0;                     /* Counts defective tracks */
     U32 reclaimed = 0;                  /* Counts reclaimed tracks */
+    U32 remaining;                      /* Counts number of tracks to process */
+    U32 total;                          /* Total number of tracks to process */
 
     int infile  = -1;                   /* Input  file descriptor integer */
     int outfile = -1;                   /* output file descriptor integer */
@@ -202,6 +177,34 @@ int main( int argc, char *argv[] )
     if ((infile = HOPEN( argv[2], O_RDONLY | O_BINARY )) < 0)
         return error( errno, "could not open input file" );
 
+    /*------------------------------*/
+    /* Read and inspect file header */
+    /*------------------------------*/
+
+    if ((rc = read(infile, trackbuf, FILEHDRSIZE)) <= 0 || rc != FILEHDRSIZE)
+        return error( EIO, "I/O error reading header from input file" );
+
+    if (memcmp(trackbuf, "CKD_P370", 8) != 0)
+        return error(EINTR, "input file is no CKD dasd image");
+
+    if (trackbuf[16] != 0x90)
+        return error(EINTR, "input file is no 3390 dasd image");
+
+    FETCH_FW( head, &trackbuf[8] );
+    FETCH_FW( track, &trackbuf[12] );
+    FETCH_HW( cyl, &trackbuf[18] );
+
+    if (bswap_32(track) != TRACKSIZE)
+        return error(EINTR, "input file uses an unsupported track size");
+
+    printf("3390 DASD image: %d heads, %d cylinders\n\n", bswap_32(head), bswap_16(cyl));
+
+    remaining = total = TRACKSPERCYL * bswap_16(cyl);
+
+    /*-----------------------------------------------------------*/
+    /* Open output file and copy file header (only on "reclaim") */
+    /*-----------------------------------------------------------*/
+
     if (reclaim)
     {
         printf( "Opening output file \"%s\"...\n", argv[3] );
@@ -209,22 +212,17 @@ int main( int argc, char *argv[] )
         if ((outfile = HOPEN( argv[3], O_CREAT | O_EXCL | O_WRONLY | O_BINARY,
             S_IRUSR | S_IWUSR | S_IRGRP )) < 0)
             return error( errno, "could not open output file" );
+
+        if ((rc = write( outfile, trackbuf, FILEHDRSIZE )) < 0 || rc != FILEHDRSIZE)
+            return error( EIO, "I/O error writing output file" );
     }
 
-    /*------------------*/
-    /* Copy file header */
-    /*------------------*/
-
-    read( infile, trackbuf, FILEHDRSIZE );
-
-    if (reclaim)
-        write( outfile, trackbuf, FILEHDRSIZE );
 
 c:  /*---------------------------*/
     /* Start of copy tracks loop */
     /*---------------------------*/
 
-    track = TRACKNUM;
+    track = total - remaining;
     cyl   = CYLNUM ( track );
     head  = HEADNUM( track );
 
@@ -337,7 +335,7 @@ nxtpos= lseek( infile,   0,      SEEK_CUR  );           /* save current file pos
     /* Loop until all tracks copied */
     /*------------------------------*/
 
-    if (--REMAINING)
+    if (--remaining)
         goto c;
 
     /*-----------------------*/
@@ -347,9 +345,9 @@ nxtpos= lseek( infile,   0,      SEEK_CUR  );           /* save current file pos
     if (infile  > 0) close( infile  );
     if (outfile > 0) close( outfile );
 
-    printf( "%d tracks (%d cylinders) read.\n",    NUMTRACKS, NUMCYLS );
+    printf( "%d tracks (%d cylinders) read.\n",    total, CYLNUM(total) );
     if (reclaim)
-    printf( "%d tracks (%d cylinders) written.\n", NUMTRACKS, NUMCYLS );
+    printf( "%d tracks (%d cylinders) written.\n", total, CYLNUM(total) );
 
     if (!reclaim)
         printf( "Image currently has %d defective tracks assigned to an alternate.\n", numbad );
