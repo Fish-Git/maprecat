@@ -51,6 +51,7 @@
 #define  TRACKSIZE          (56832)     /* CKD_P370 format */
 
 #define  BAD_TRACK_SIG      0x56,0x45,0x52,0x30,0xF1,0xE2
+//                          ASCII "VER0" + EBCDIC "1S"
 
 #define  CYLS3390_1         (1113)
 #define  CYLS3390_3         (CYLS3390_1 * 3)
